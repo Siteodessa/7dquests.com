@@ -1,5 +1,19 @@
+const to_timestamp = function (date) {
+  return Date.parse(date)
+}
+const timestamp_is_past = function (date) {
+  return Date.now() > date
+}
+
+
+
+
+
+
 function day_table(days_passed = 0) {
+
   const Brone_m = require('../db/models/brone.model');
+
   this.date = new Date(new Date().getTime() + 24 * 60 * 60 * 1000 * days_passed)
     this.formatDate = function (timestamp) {
         return this.formatDays(timestamp) + ' ' + this.formatDays(formatTime)
@@ -83,15 +97,38 @@ const Sync_schedules = (schedule, brones) => {
       })
     return result
   }
+
+  this.unsetPast = function ( schedule ) {
+    let result = schedule.map(sched => {
+        timestamp = to_timestamp(sched["date"] + ' ' + sched["time"])
+        if (timestamp_is_past(timestamp)) {
+          sched["is_free"] = false
+        }
+        return sched
+      })
+    return result
+  }
+  this.setSlotID = function ( schedule ) {
+    let result = schedule.map(sched => {
+        sched["your_slot_id"] = 7421
+        return sched
+      })
+    return result
+  }
   this.sync = function () {
     brones = this.sync_brone_date(brones)
     schedule = this.setAvailability(schedule, brones)
     schedule = this.setPrice(schedule, brones)
+    schedule = this.unsetPast(schedule)
+    schedule = this.setSlotID(schedule)
+
     return schedule
+
   }
   return this
 }
   exports.scheduler = (days_number, brones = []) => {
+
     let single_day, ts, ng; let schedule = []
     for (let i = 0; i < days_number; i++) {
       single_day = day_table(i)

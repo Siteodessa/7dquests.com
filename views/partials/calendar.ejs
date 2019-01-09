@@ -29,12 +29,15 @@ return dd + '.' + mm + '.' + yy + ' в ' + hh + ':' + min;
 <% function fill_rows(nDays, thisDay, column, add_month) {
 let has_brones;
 let brone_time;
+brones = brones.filter(brone => brone.quest_name === d.page_link)
   result = ''
   result +=  "<div class='cal_row weeks'>"
+     console.log(brones);
   for (i = 1; i <= nDays; i++) {
     let z = (i * 0.01) + 1
     hasbrones = ''
     brone_time = []
+
     brones.forEach(function(brone){
       if (get_year_val() == brone.brone_time.split('-')[0] &&
       i == brone.brone_time.split('-')[2].split(' ')[0] &&

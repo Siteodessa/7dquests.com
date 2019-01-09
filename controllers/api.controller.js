@@ -11,43 +11,60 @@ let error = require('./error.controller').error;
 
 exports.mir_kvestov_schedule = (req, res) => {
     let url = req.url.split('/')
-
       Brone_m.find()
       .then(brones => {
+
+        console.log('brones', brones);
         brones = brones.filter( brone => brone.quest_name === url[3]); if (brones.length < 1) error(res, 'No quests found')
+        // console.log('mir_kvestov_schedule');
+
         let schedule = Calendar_c.scheduler(14, brones)
+        // console.log(schedule);
         let mir_kvestov_schedule = JSON.stringify(schedule)
-        mir_kvestov_schedule = mir_kvestov_schedule.slice(1, -1)
+        // mir_kvestov_schedule = mir_kvestov_schedule.slice(1, -1)
         res.status(200).send(mir_kvestov_schedule)
       }).catch(err => {
-      error(res, err)
+            res.status(500).send({'message' : 'No brones found'})
       });
 }
 
 exports.mir_kvestov_brone = (req, res) => {
+
+      let quest_name = req.url.split('/')[3]
     if(!req.body) {
         return res.status(400).send({"success": false, "message": "Указанное время занято" });
     }
     let mir_kvestov_brone_request = req.body
 
     const brone = new Brone_m(req.body);
-    // we can add md5 later
-    brone.save(
-{      timestamp : Date.now(),
-      brone_time : req.body.date + ' ' + req.body.time,
-      name : req.body.first_name + ' ' + req.body.family_name || req.body.first_name || '',
-      phone : req.body.phone,
-      price : req.body.price,
-      time : req.body.time,
-      quest_name : req.body.quest_name,
-      mk_unique_id : req.body.unique_id,
-      mk_your_slot_id : req.body.your_slot_id,
-      company_name : req.body.company_name}
-    )
-    .then(data => {
-          console.log('da');
-          console.log(data);
-      res.status(200).send(data);
+
+    const brone_time = req.body.date + ' ' + req.body.time
+    const name = req.body.first_name + ' ' + req.body.family_name || req.body.first_name || ''
+    const email = req.body.email || ''
+    const time = req.body.time || ''
+    const phone = req.body.phone || ''
+    const price = req.body.price || ''
+    const source = req.body.source || ''
+
+
+        const mk_request = new Brone_m({
+          timestamp : Number(Date.now()),
+          brone_time : String(brone_time),
+          name : String(name),
+          phone : String(phone),
+          price : String(price),
+          time : String(time),
+          email : String(email),
+          quest_name : String(quest_name),
+          mk_unique_id : String(source),
+          mk_your_slot_id : String(source),
+          company_name : String(source)
+        });
+
+
+
+    mk_request.save() .then(data => {
+        res.status(200).send({"success": true});
     }).catch(err => {
         res.status(500).send({"success": false, "message": "Указанное время занято" });
     });

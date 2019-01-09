@@ -15,9 +15,10 @@
         </div>
       </div>
     </div>
-    <div class="row">
+    <div class="row qloop">
                 <% quests.forEach(function(quest){ %>
-                    <div class="col-lg-4">
+    <div class="row qblock">
+                    <div class="col-lg-6 l-col">
                       <div class="single-cat-widget">
                         <div class="content relative">
                                       <a href="/quests/<%= quest["page_link"] %>" target="_blank">
@@ -26,13 +27,21 @@
                                         </div>
                                       </a>
                           </div>
-                          <div class="loop_text">
-                            <a href="/quests/<%= quest["page_link"] %>" target="_blank">
-                                      <h4 class="content-title mx-auto text-uppercase"> <%= quest["quest_name"]	%></h4>    </a>
-                                      <p><%= quest["quest_legend"] %></p>
-                          </div>
+
                       </div>
                     </div>
+
+                    <div class="col-lg-6 r-col">
+                      <div class="loop_text">
+                        <a href="/quests/<%= quest["page_link"] %>">
+                                  <h4 class="content-title mx-auto text-uppercase"> <%= quest["quest_name"]	%></h4>    </a>
+                                  <p><%= quest["quest_legend"] %></p>
+                                  <a href="/quests/<%= quest["page_link"] %>"  class="primary-btn header-btn text-uppercase mt-10">Перейти</a>
+                      </div>
+                    </div>
+                    </div>
+
+
                 <% }); %>
     </div>
   </div>
